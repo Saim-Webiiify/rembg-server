@@ -5,20 +5,21 @@ from io import BytesIO
 import os
 
 app = Flask(__name__)
-CORS(app)  # ✅ enable CORS for all routes
+CORS(app)
+
+@app.route("/")
+def index():
+    return "rembg-server is running!"
 
 @app.route("/api/remove", methods=["POST"])
 def remove_bg():
-    img = request.files.get("file")
-    if not img:
-        return {"error": "Missing file"}, 400
-    result = remove(img.read())
-    return send_file(BytesIO(result), mimetype="image/png")
+    if "file" not in request.files:
+        return {"error": "No file part"}, 400
 
-@app.route("/", methods=["GET"])
-def welcome():
-    return "rembg-server is running!"
+    file = request.files["file"]
+    if file.filename == "":
+        return {"error": "No selected file"}, 400
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+    input_data = file.read()
+    output_data = remove(input_data)
+    return send_file(BytesIO(output_data), mimetype="image/png")
