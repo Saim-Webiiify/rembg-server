@@ -1,1 +1,4 @@
+rembg[cpu,cli]
+flask
 flask-cors
+gunicorn
