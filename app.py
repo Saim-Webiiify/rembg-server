@@ -1,9 +1,11 @@
 from flask import Flask, request, send_file
+from flask_cors import CORS
 from rembg import remove
 from io import BytesIO
 import os
 
 app = Flask(__name__)
+CORS(app)  # ✅ enable CORS for all routes
 
 @app.route("/api/remove", methods=["POST"])
 def remove_bg():
